@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Engine/TriggerVolume.h"
 #include "MoveWall.generated.h"
 
 
@@ -27,6 +28,8 @@ public:
 private:
 	UPROPERTY(VisibleAnywhere)
 		float MoveAmount = 130.0f;
-
+	
+	UPROPERTY(EditAnywhere)
+		ATriggerVolume* PressurePlate;
 	
 };
