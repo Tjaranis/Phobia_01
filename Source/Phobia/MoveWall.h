@@ -20,6 +20,7 @@ public:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+	void OpenWall();
 
 public:	
 	// Called every frame
@@ -31,5 +32,11 @@ private:
 	
 	UPROPERTY(EditAnywhere)
 		ATriggerVolume* PressurePlate;
+	UPROPERTY(EditAnywhere)
+		float DelayForClose = 1.0f;
+	
+	float LastOpenTime;
+
+	AActor* ActorThatOpens;
 	
 };

@@ -2,6 +2,7 @@
 
 #include "MoveWall.h"
 #include "Gameframework/Actor.h"
+#include <Engine/World.h>
 
 
 // Sets default values for this component's properties
@@ -20,12 +21,8 @@ void UMoveWall::BeginPlay()
 {
 	Super::BeginPlay();
 
-	AActor* Owner = GetOwner();
-	//rotation
-	FVector NewVector = GetOwner()->GetActorLocation();
-	NewVector.X -= MoveAmount;
-	//change owner rotated
-	Owner->SetActorRelativeLocation(NewVector,true);
+	ActorThatOpens = GetWorld()->GetFirstPlayerController()->GetPawn();
+
 	
 }
 
@@ -35,6 +32,18 @@ void UMoveWall::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+	// open wall
+	if (PressurePlate->IsOverlappingActor(ActorThatOpens)) {
+		OpenWall();
+	}
 }
 
+void UMoveWall::OpenWall()
+{
+	AActor* Owner = GetOwner();
+	//rotation
+	FVector NewVector = GetOwner()->GetActorLocation();
+	NewVector.X -= MoveAmount;
+	//change owner rotated
+	Owner->SetActorRelativeLocation(NewVector, true);
+}
