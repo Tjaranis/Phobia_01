@@ -1,7 +1,11 @@
 // toturial-continued dev by Tjalfe
 
 #include "CanGrab.h"
+#include <Engine/World.h>
+#include "DrawDebugHelpers.h"
+#include "GameFramework/PlayerController.h"
 
+#define OUT
 
 // Sets default values for this component's properties
 UCanGrab::UCanGrab()
@@ -34,6 +38,39 @@ void UCanGrab::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+	// get player view.
+	FVector PlayerViewPointLocation;
+	FRotator PlayerViewPointRotator;
+
+	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(
+		OUT PlayerViewPointLocation,
+		OUT PlayerViewPointRotator
+	);
+
+	//logging rotation and loc
+	/*UE_LOG(LogTemp, Warning, TEXT("PlayerViewPointLocation: %s, PlayerViewPointRotator: %s"), 
+		*PlayerViewPointLocation.ToString(),
+		*PlayerViewPointRotator.ToString()
+	);*/
+
+	FVector LineTraceEnd = PlayerViewPointLocation + PlayerViewPointRotator.Vector()*Reach;
+	
+	//draw debug line
+	DrawDebugLine(
+		GetWorld(),
+		PlayerViewPointLocation,
+		LineTraceEnd,
+		FColor(255,0,0),
+		false,
+		0.f,
+		0.f,
+		10.f
+	);
+
+	//ray-cast out to reach distance
+
+	//see what we hit
+
+
 }
 
