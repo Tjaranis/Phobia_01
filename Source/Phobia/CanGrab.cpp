@@ -44,6 +44,7 @@ void UCanGrab::BeginPlay()
 	if (InputComponent) {
 		UE_LOG(LogTemp, Warning, TEXT("%s got input component"), *ObjectName);
 		InputComponent->BindAction("Grab", IE_Pressed, this, &UCanGrab::Grab);
+		InputComponent->BindAction("Grab", IE_Released, this, &UCanGrab::Grab);
 	}
 	else
 	{
@@ -61,6 +62,10 @@ void UCanGrab::Grab() {
 		holding = false;
 		UE_LOG(LogTemp, Warning, TEXT("released method called"));
 	}
+}
+void UCanGrab::Release() {
+	holding = false;
+	UE_LOG(LogTemp, Warning, TEXT("released method called"));
 }
 
 // Called every frame
