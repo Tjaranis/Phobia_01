@@ -43,6 +43,7 @@ void UCanGrab::BeginPlay()
 
 	if (InputComponent) {
 		UE_LOG(LogTemp, Warning, TEXT("%s got input component"), *ObjectName);
+		InputComponent->BindAction("Grab", IE_Pressed, this, &UCanGrab::Grab);
 	}
 	else
 	{
@@ -51,6 +52,9 @@ void UCanGrab::BeginPlay()
 
 }
 
+void UCanGrab::Grab() {
+	UE_LOG(LogTemp, Warning, TEXT("grabbing method called"));
+}
 
 // Called every frame
 void UCanGrab::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
