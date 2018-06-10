@@ -17,7 +17,6 @@ UCanGrab::UCanGrab()
 	// ...
 }
 
-
 // Called when the game starts
 void UCanGrab::BeginPlay()
 {
@@ -30,6 +29,26 @@ void UCanGrab::BeginPlay()
 	FString ObjectPos = GetOwner()->GetActorLocation().ToString();
 	// report for test.
 	UE_LOG(LogTemp, Warning, TEXT("%s Object reached initiated and Loc at %s"), *ObjectName, *ObjectPos);
+
+	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
+	InputComponent = GetOwner()->FindComponentByClass<UInputComponent>();
+
+	if (PhysicsHandle) {
+		//do stuff
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s is missing physic component"), *ObjectName);
+	}
+
+	if (InputComponent) {
+		UE_LOG(LogTemp, Warning, TEXT("%s got input component"), *ObjectName);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s is missing Input component"), *ObjectName);
+	}
+
 }
 
 
