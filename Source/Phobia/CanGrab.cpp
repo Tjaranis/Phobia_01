@@ -53,7 +53,14 @@ void UCanGrab::BeginPlay()
 }
 
 void UCanGrab::Grab() {
-	UE_LOG(LogTemp, Warning, TEXT("grabbing method called"));
+	if (!holding) {
+		holding = true;
+		UE_LOG(LogTemp, Warning, TEXT("grabbing method called"));
+	}
+	else {
+		holding = false;
+		UE_LOG(LogTemp, Warning, TEXT("released method called"));
+	}
 }
 
 // Called every frame
