@@ -22,9 +22,9 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-	void FindInputComponent(FString &ObjectName);
+	void InitializeInputComponent();
 
-	void FindPhysicsHandleComponent(FString &ObjectName);
+	void InitializePhysicsHandle();
 
 public:	
 	// Called every frame
@@ -32,10 +32,18 @@ public:
 
 	const FHitResult GetFirstPhysicsBodyInReach();
 
+	void GetAndSetPlayerViewAndPointRotation();
+	FVector GetLineTraceEnd(float lengthOfLine);
+
 private:
 	//how far ahead of player can be reached
 	float Reach = 100.f;
 	bool holding = false;
+
+	//player view point
+	FVector PlayerViewPointLocation;
+	//player view point rotator
+	FRotator PlayerViewPointRotator;
 	
 	UPhysicsHandleComponent* PhysicsHandle=nullptr;
 	UInputComponent* InputComponent = nullptr;
