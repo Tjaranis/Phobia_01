@@ -35,6 +35,31 @@ void UCanGrab::BeginPlay()
 	FindInputComponent(ObjectName);
 
 }
+// Called every frame
+void UCanGrab::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	// get player view.
+	FVector PlayerViewPointLocation;
+	FRotator PlayerViewPointRotator;
+
+	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(
+		OUT PlayerViewPointLocation,
+		OUT PlayerViewPointRotator
+	);
+	FVector LineTraceEnd = PlayerViewPointLocation + PlayerViewPointRotator.Vector()*Reach;
+
+	//if the physics handle is attachedd
+	if (PhysicsHandle->GrabbedComponent) 
+	{
+		//move the object that we're holding
+		PhysicsHandle->SetTargetLocation(LineTraceEnd);
+	}
+	
+
+}
+
 
 void UCanGrab::FindInputComponent(FString &ObjectName)
 {
@@ -63,19 +88,28 @@ void UCanGrab::FindPhysicsHandleComponent(FString &ObjectName)
 void UCanGrab::Grab() {
 		UE_LOG(LogTemp, Warning, TEXT("grabbing method called"));
 		GetFirstPhysicsBodyInReach();
+		///line trace and see if we reach any actors with physics body collision channel set
+		auto HitResult = GetFirstPhysicsBodyInReach();
+		auto ComponentToGrab = HitResult.GetComponent();
+		auto ActorHit= HitResult.GetActor();
+
+		if (ActorHit != nullptr) {
+			PhysicsHandle->GrabComponent(
+				ComponentToGrab,
+				NAME_Name,
+				ActorHit->GetActorLocation(),
+				true //allow rotation
+			);
+		}
 }
 void UCanGrab::Release() {
 	UE_LOG(LogTemp, Warning, TEXT("released method called"));
+	PhysicsHandle->ReleaseComponent();
 }
 
-// Called every frame
-void UCanGrab::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-}
 
-void UCanGrab::GetFirstPhysicsBodyInReach()
+const FHitResult UCanGrab::GetFirstPhysicsBodyInReach()
 {
 	// get player view.
 	FVector PlayerViewPointLocation;
@@ -124,5 +158,7 @@ void UCanGrab::GetFirstPhysicsBodyInReach()
 	if (ActorHit) {
 		UE_LOG(LogTemp, Warning, TEXT("Line Trace hit: %s"), *(ActorHit->GetName()));
 	}
+
+	return Hit;
 }
 
