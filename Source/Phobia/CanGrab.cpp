@@ -27,12 +27,30 @@ void UCanGrab::BeginPlay()
 	FString ObjectName = GetOwner()->GetName();
 	//get owner position.
 	FString ObjectPos = GetOwner()->GetActorLocation().ToString();
-	// report for test.
-	UE_LOG(LogTemp, Warning, TEXT("%s Object reached initiated and Loc at %s"), *ObjectName, *ObjectPos);
 
 	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
 	InputComponent = GetOwner()->FindComponentByClass<UInputComponent>();
 
+	FindPhysicsHandleComponent(ObjectName);
+	FindInputComponent(ObjectName);
+
+}
+
+void UCanGrab::FindInputComponent(FString &ObjectName)
+{
+	if (InputComponent) {
+		UE_LOG(LogTemp, Warning, TEXT("%s got input component"), *ObjectName);
+		InputComponent->BindAction("Grab", IE_Pressed, this, &UCanGrab::Grab);
+		InputComponent->BindAction("Grab", IE_Released, this, &UCanGrab::Release);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s is missing Input component"), *ObjectName);
+	}
+}
+
+void UCanGrab::FindPhysicsHandleComponent(FString &ObjectName)
+{
 	if (PhysicsHandle) {
 		//do stuff
 	}
@@ -40,31 +58,13 @@ void UCanGrab::BeginPlay()
 	{
 		UE_LOG(LogTemp, Error, TEXT("%s is missing physic component"), *ObjectName);
 	}
-
-	if (InputComponent) {
-		UE_LOG(LogTemp, Warning, TEXT("%s got input component"), *ObjectName);
-		InputComponent->BindAction("Grab", IE_Pressed, this, &UCanGrab::Grab);
-		InputComponent->BindAction("Grab", IE_Released, this, &UCanGrab::Grab);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("%s is missing Input component"), *ObjectName);
-	}
-
 }
 
 void UCanGrab::Grab() {
-	if (!holding) {
-		holding = true;
 		UE_LOG(LogTemp, Warning, TEXT("grabbing method called"));
-	}
-	else {
-		holding = false;
-		UE_LOG(LogTemp, Warning, TEXT("released method called"));
-	}
+		GetFirstPhysicsBodyInReach();
 }
 void UCanGrab::Release() {
-	holding = false;
 	UE_LOG(LogTemp, Warning, TEXT("released method called"));
 }
 
@@ -73,6 +73,10 @@ void UCanGrab::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+}
+
+void UCanGrab::GetFirstPhysicsBodyInReach()
+{
 	// get player view.
 	FVector PlayerViewPointLocation;
 	FRotator PlayerViewPointRotator;
@@ -83,19 +87,19 @@ void UCanGrab::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	);
 
 	//logging rotation and loc
-	/*UE_LOG(LogTemp, Warning, TEXT("PlayerViewPointLocation: %s, PlayerViewPointRotator: %s"), 
-		*PlayerViewPointLocation.ToString(),
-		*PlayerViewPointRotator.ToString()
+	/*UE_LOG(LogTemp, Warning, TEXT("PlayerViewPointLocation: %s, PlayerViewPointRotator: %s"),
+	*PlayerViewPointLocation.ToString(),
+	*PlayerViewPointRotator.ToString()
 	);*/
 
 	FVector LineTraceEnd = PlayerViewPointLocation + PlayerViewPointRotator.Vector()*Reach;
-	
+
 	///draw debug line
 	DrawDebugLine(
 		GetWorld(),
 		PlayerViewPointLocation,
 		LineTraceEnd,
-		FColor(255,0,0),
+		FColor(255, 0, 0),
 		false,
 		0.f,
 		0.f,
@@ -120,6 +124,5 @@ void UCanGrab::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	if (ActorHit) {
 		UE_LOG(LogTemp, Warning, TEXT("Line Trace hit: %s"), *(ActorHit->GetName()));
 	}
-
 }
 
