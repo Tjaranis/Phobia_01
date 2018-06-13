@@ -31,14 +31,11 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	const FHitResult GetFirstPhysicsBodyInReach();
-
-	void GetAndSetPlayerViewAndPointRotation();
 	FVector GetLineTraceEnd(float lengthOfLine);
 
 private:
 	//how far ahead of player can be reached
 	float Reach = 100.f;
-	bool holding = false;
 
 	//player view point
 	FVector PlayerViewPointLocation;

@@ -21,8 +21,9 @@ UCanGrab::UCanGrab()
 void UCanGrab::BeginPlay()
 {
 	Super::BeginPlay();
-
+	//initiated the PhysicsHandle by finding the attached physics object from GetOwner
 	InitializePhysicsHandle();
+	//initiated the InputComponent by finding the attached Input Component from GetOwner
 	InitializeInputComponent();
 
 }
@@ -30,21 +31,13 @@ void UCanGrab::BeginPlay()
 void UCanGrab::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// get player view.
-	FVector PlayerViewPointLocation;
-	FRotator PlayerViewPointRotator;
-
 	//if the physics handle is attachedd
 	if (PhysicsHandle->GrabbedComponent) 
 	{
 		//move the object that we're holding
 		PhysicsHandle->SetTargetLocation(GetLineTraceEnd(Reach));
 	}
-	
-
 }
-
 
 void UCanGrab::InitializeInputComponent()
 {
@@ -55,32 +48,26 @@ void UCanGrab::InitializeInputComponent()
 	}
 	else
 	{
-		FString ObjectName = GetOwner()->GetName();
-		UE_LOG(LogTemp, Error, TEXT("%s is missing Input component"), *ObjectName);
+		UE_LOG(LogTemp, Error, TEXT("%s is missing Input component"), *(GetOwner()->GetName()));
 	}
 }
 
 void UCanGrab::InitializePhysicsHandle()
 {
 	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
-	if (PhysicsHandle) {
-		//do stuff
-	}
+	if (PhysicsHandle) {/*do stuff*/}
 	else
 	{
-		FString ObjectName = GetOwner()->GetName();
-		UE_LOG(LogTemp, Error, TEXT("%s is missing physic component"), *ObjectName);
+		UE_LOG(LogTemp, Error, TEXT("%s is missing physic component"), *(GetOwner()->GetName()));
 	}
 }
 
 void UCanGrab::Grab() {
-		UE_LOG(LogTemp, Warning, TEXT("grabbing method called"));
-		GetFirstPhysicsBodyInReach();
 		///line trace and see if we reach any actors with physics body collision channel set
 		auto HitResult = GetFirstPhysicsBodyInReach();
 		auto ComponentToGrab = HitResult.GetComponent();
 		auto ActorHit= HitResult.GetActor();
-
+		//if physics object hit exists, Grab object
 		if (ActorHit != nullptr) {
 			PhysicsHandle->GrabComponent(
 				ComponentToGrab,
@@ -91,17 +78,13 @@ void UCanGrab::Grab() {
 		}
 }
 void UCanGrab::Release() {
-	UE_LOG(LogTemp, Warning, TEXT("released method called"));
 	PhysicsHandle->ReleaseComponent();
 }
-
-
 
 const FHitResult UCanGrab::GetFirstPhysicsBodyInReach()
 {
 	///setup guery parameters
 	FCollisionQueryParams TraceParameters(FName(TEXT("")), false, GetOwner());
-
 	///line-trace (ray-cast) out to reach distance
 	FHitResult Hit;
 	GetWorld()->LineTraceSingleByObjectType(
@@ -111,26 +94,21 @@ const FHitResult UCanGrab::GetFirstPhysicsBodyInReach()
 		FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody),
 		TraceParameters
 	);
-
-	///see what we hit
+	///see what we hit, for test REMOVE LATER
 	AActor* ActorHit = Hit.GetActor();
 	if (ActorHit) {
 		UE_LOG(LogTemp, Warning, TEXT("Line Trace hit: %s"), *(ActorHit->GetName()));
 	}
-
 	return Hit;
 }
 
 FVector UCanGrab::GetLineTraceEnd(float lengthOfLine)
 {
-	GetAndSetPlayerViewAndPointRotation();
-	return PlayerViewPointLocation + PlayerViewPointRotator.Vector()*lengthOfLine;
-}
-void UCanGrab::GetAndSetPlayerViewAndPointRotation()
-{
 	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(
 		OUT PlayerViewPointLocation,
 		OUT PlayerViewPointRotator
 	);
+	return PlayerViewPointLocation + PlayerViewPointRotator.Vector()*lengthOfLine;
 }
+
 
