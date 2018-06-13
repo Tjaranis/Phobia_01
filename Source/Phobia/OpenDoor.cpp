@@ -23,7 +23,14 @@ void UOpenDoor::BeginPlay()
 {
 	Super::BeginPlay();
 	Owner = GetOwner();
+	if (!Owner) {
+		UE_LOG(LogTemp, Error, TEXT("%s is missing Owner initialization"), *(GetOwner()->GetName()));
+	}
+	if (!PressurePlate) {
+		UE_LOG(LogTemp, Error, TEXT("%s is missing PressurePlate component"), *(GetOwner()->GetName()));
+	}
 	//to get the player actor
+	
 	//ActorThatOpens = GetWorld()->GetFirstPlayerController()->GetPawn();
 }
 
@@ -58,20 +65,24 @@ float UOpenDoor::GetTotalMassOfActorsOnPlate() {
 	float TotalMass = 0.f;
 	//find overlapping actors.
 	TArray<AActor*> OverlappingActors;
-	PressurePlate->GetOverlappingActors(OUT OverlappingActors);
-	//iterated and add the actors weight together.
-	for (const auto* Actor : OverlappingActors)
-	{
-		TotalMass += Actor->FindComponentByClass<UPrimitiveComponent>()->GetMass();
-	}
-	return TotalMass;
+	if (PressurePlate) {
+		PressurePlate->GetOverlappingActors(OUT OverlappingActors);
+		//iterated and add the actors weight together.
+		for (const auto* Actor : OverlappingActors)
+		{
+			TotalMass += Actor->FindComponentByClass<UPrimitiveComponent>()->GetMass();
+		}
+		return TotalMass;
+	}else{ return 0;}
 }
 
 void UOpenDoor::OpenDoor()
 {
+	if (!Owner) {return;}
 	Owner->SetActorRotation(FRotator(.0f, OpenAngle, .0f));
 }
 void UOpenDoor::CloseDoor()
 {
+	if (!Owner) { return; }
 	Owner->SetActorRotation(FRotator(.0f, .0f, .0f));
 }

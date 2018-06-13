@@ -37,7 +37,7 @@ private:
 		float OpenAngle = -83.0f;
 
 	UPROPERTY(EditAnywhere)
-		ATriggerVolume* PressurePlate;
+		ATriggerVolume* PressurePlate=nullptr;
 
 	UPROPERTY(EditAnywhere)
 		float DelayForClose = 1.0f;
@@ -48,6 +48,5 @@ private:
 
 	/*UPROPERTY(EditAnywhere)*/
 	//AActor* ActorThatOpens;
-
-	AActor* Owner;
+	AActor* Owner=nullptr;
 };

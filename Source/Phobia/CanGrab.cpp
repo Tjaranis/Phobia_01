@@ -32,6 +32,7 @@ void UCanGrab::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	//if the physics handle is attachedd
+	if (!PhysicsHandle) { return; }
 	if (PhysicsHandle->GrabbedComponent) 
 	{
 		//move the object that we're holding
@@ -69,6 +70,7 @@ void UCanGrab::Grab() {
 		auto ActorHit= HitResult.GetActor();
 		//if physics object hit exists, Grab object
 		if (ActorHit != nullptr) {
+			if (!PhysicsHandle) { return; }
 			PhysicsHandle->GrabComponent(
 				ComponentToGrab,
 				NAME_Name,
@@ -78,6 +80,7 @@ void UCanGrab::Grab() {
 		}
 }
 void UCanGrab::Release() {
+	if (!PhysicsHandle) { return; }
 	PhysicsHandle->ReleaseComponent();
 }
 
