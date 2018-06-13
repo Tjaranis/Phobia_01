@@ -35,7 +35,8 @@ public:
 
 private:
 	//how far ahead of player can be reached
-	float Reach = 100.f;
+	UPROPERTY(EditAnywhere)
+		float Reach = 150.f;
 
 	//player view point
 	FVector PlayerViewPointLocation;

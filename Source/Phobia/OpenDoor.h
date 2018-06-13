@@ -23,6 +23,9 @@ protected:
 
 	void OpenDoor();
 	void CloseDoor();
+	//get total mass of Actors.
+	float GetTotalMassOfActorsOnPlate();
+
 
 public:	
 	// Called every frame
@@ -38,11 +41,13 @@ private:
 
 	UPROPERTY(EditAnywhere)
 		float DelayForClose = 1.0f;
-
 	float LastOpenTime;
 
+	UPROPERTY(EditAnywhere)
+		float TriggerMassToOpen = 50;
+
 	/*UPROPERTY(EditAnywhere)*/
-	AActor* ActorThatOpens;
+	//AActor* ActorThatOpens;
 
 	AActor* Owner;
 };
