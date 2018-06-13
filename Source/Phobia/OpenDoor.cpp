@@ -22,17 +22,7 @@ UOpenDoor::UOpenDoor()
 void UOpenDoor::BeginPlay()
 {
 	Super::BeginPlay();
-	Owner = GetOwner();
-	OpenYaw = Owner->GetActorRotation().Yaw+OpenAngle;
-	ClosedYaw= Owner->GetActorRotation().Yaw;
 
-	if (Owner) {
-		OpenYaw = Owner->GetActorRotation().Yaw + OpenAngle;
-		ClosedYaw = Owner->GetActorRotation().Yaw;
-	}
-	else {
-		UE_LOG(LogTemp, Error, TEXT("%s is missing Owner initialization"), *(GetOwner()->GetName()));
-	}
 	if (!PressurePlate) {
 		UE_LOG(LogTemp, Error, TEXT("%s is missing PressurePlate component"), *(GetOwner()->GetName()));
 	}
@@ -46,22 +36,10 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// pool the trigger every frame.
-	/*
-	//the actor which need to be on the plate to open door.
-	if (PressurePlate->IsOverlappingActor(ActorThatOpens)) {
-		OpenDoor();
-		LastOpenTime = GetWorld()->GetTimeSeconds();
-	}*/
-	//the weight needed on the plate to open door
-	if (GetTotalMassOfActorsOnPlate() > TriggerMassToOpen) {
-		OpenDoor();
-		LastOpenTime = GetWorld()->GetTimeSeconds();
-	}
-
-	//check if close time is hit.
-	if ((LastOpenTime + DelayForClose) <= GetWorld()->GetTimeSeconds()) {
-		CloseDoor();
+	if (GetTotalMassOfActorsOnPlate() >= TriggerMassToOpen) {
+		OnOpenRequest.Broadcast();
+	}else{
+		OnCloseRequest.Broadcast();
 	}
 }
 
@@ -81,15 +59,4 @@ float UOpenDoor::GetTotalMassOfActorsOnPlate() {
 		}
 		return TotalMass;
 	}else{ return 0;}
-}
-
-void UOpenDoor::OpenDoor()
-{
-	if (!Owner) {return;}
-	Owner->SetActorRotation(FRotator(.0f, OpenYaw, .0f));
-}
-void UOpenDoor::CloseDoor()
-{
-	if (!Owner) { return; }
-	Owner->SetActorRotation(FRotator(.0f, ClosedYaw, .0f));
 }
