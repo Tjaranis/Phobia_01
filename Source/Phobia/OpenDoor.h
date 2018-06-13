@@ -46,6 +46,9 @@ private:
 	UPROPERTY(EditAnywhere)
 		float TriggerMassToOpen = 50;
 
+	float ClosedYaw;
+	float OpenYaw;
+
 	/*UPROPERTY(EditAnywhere)*/
 	//AActor* ActorThatOpens;
 	AActor* Owner=nullptr;

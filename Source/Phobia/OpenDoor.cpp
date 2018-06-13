@@ -23,7 +23,14 @@ void UOpenDoor::BeginPlay()
 {
 	Super::BeginPlay();
 	Owner = GetOwner();
-	if (!Owner) {
+	OpenYaw = Owner->GetActorRotation().Yaw+OpenAngle;
+	ClosedYaw= Owner->GetActorRotation().Yaw;
+
+	if (Owner) {
+		OpenYaw = Owner->GetActorRotation().Yaw + OpenAngle;
+		ClosedYaw = Owner->GetActorRotation().Yaw;
+	}
+	else {
 		UE_LOG(LogTemp, Error, TEXT("%s is missing Owner initialization"), *(GetOwner()->GetName()));
 	}
 	if (!PressurePlate) {
@@ -79,10 +86,10 @@ float UOpenDoor::GetTotalMassOfActorsOnPlate() {
 void UOpenDoor::OpenDoor()
 {
 	if (!Owner) {return;}
-	Owner->SetActorRotation(FRotator(.0f, OpenAngle, .0f));
+	Owner->SetActorRotation(FRotator(.0f, OpenYaw, .0f));
 }
 void UOpenDoor::CloseDoor()
 {
 	if (!Owner) { return; }
-	Owner->SetActorRotation(FRotator(.0f, .0f, .0f));
+	Owner->SetActorRotation(FRotator(.0f, ClosedYaw, .0f));
 }
