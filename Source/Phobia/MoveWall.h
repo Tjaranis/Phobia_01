@@ -26,9 +26,13 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+
 private:
+	FVector ClosedLoc;
+	FVector OpenLoc;
+
 	UPROPERTY(VisibleAnywhere)
-		float MoveAmount = 130.0f;
+		float MoveAmount = 350.0f;
 	
 	UPROPERTY(EditAnywhere)
 		ATriggerVolume* PressurePlate;
@@ -36,7 +40,10 @@ private:
 		float DelayForClose = 1.0f;
 	
 	float LastOpenTime;
+	
+	UPROPERTY(EditAnywhere)
+		AActor* ActorThatOpens;
 
-	AActor* ActorThatOpens;
+	AActor* PlayerActorThatOpens;
 	
 };

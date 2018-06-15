@@ -39,6 +39,9 @@ public:
 private:
 	UPROPERTY(EditAnywhere)
 		ATriggerVolume* PressurePlate=nullptr;
+	
+	UPROPERTY(EditAnywhere)
+		AActor* ActorKeyToOpen= nullptr;
 
 	UPROPERTY(EditAnywhere)
 		float TriggerMassToOpen = 50;

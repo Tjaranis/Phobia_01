@@ -36,11 +36,12 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (GetTotalMassOfActorsOnPlate() >= TriggerMassToOpen) {
-		OnOpenRequest.Broadcast();
-	}else{
-		OnCloseRequest.Broadcast();
-	}
+		if (GetTotalMassOfActorsOnPlate() >= TriggerMassToOpen && PressurePlate->IsOverlappingActor(ActorKeyToOpen)) {
+			OnOpenRequest.Broadcast();
+		}
+		else {
+			OnCloseRequest.Broadcast();
+		}
 }
 
 /*

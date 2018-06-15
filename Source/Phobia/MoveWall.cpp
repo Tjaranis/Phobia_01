@@ -21,9 +21,11 @@ void UMoveWall::BeginPlay()
 {
 	Super::BeginPlay();
 
-	ActorThatOpens = GetWorld()->GetFirstPlayerController()->GetPawn();
+	PlayerActorThatOpens = GetWorld()->GetFirstPlayerController()->GetPawn();
 
-	
+	FVector ClosedLoc = GetOwner()->GetActorLocation();
+	FVector OpenLoc = ClosedLoc;
+	OpenLoc.X -= MoveAmount;
 }
 
 
@@ -33,17 +35,17 @@ void UMoveWall::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// open wall
-	if (PressurePlate->IsOverlappingActor(ActorThatOpens)) {
-		OpenWall();
-	}
+	
+		if (PressurePlate->IsOverlappingActor(ActorThatOpens)) {
+			OpenWall();
+		}
+
 }
 
 void UMoveWall::OpenWall()
 {
+	FVector t(10000.f, 10000.f, 10000.f);
 	AActor* Owner = GetOwner();
-	//rotation
-	FVector NewVector = GetOwner()->GetActorLocation();
-	NewVector.X -= MoveAmount;
 	//change owner rotated
-	Owner->SetActorRelativeLocation(NewVector, true);
+	Owner->SetActorLocation(t);
 }
